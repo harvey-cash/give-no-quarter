@@ -64,9 +64,14 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Districts\District.cs" />
     <Compile Include="Assets\Scripts\Districts\Tile.cs" />
+    <Compile Include="Assets\Scripts\GameLoop\GameMaster.cs" />
+    <Compile Include="Assets\Scripts\GameLoop\GameState.cs" />
+    <Compile Include="Assets\Scripts\HighlightEnum.cs" />
+    <Compile Include="Assets\Scripts\Interface\UIManager.cs" />
     <Compile Include="Assets\Scripts\Map.cs" />
-    <Compile Include="Assets\Scripts\Player.cs" />
-    <Compile Include="Assets\Scripts\PlayerEnum.cs" />
+    <Compile Include="Assets\Scripts\Players\Player.cs" />
+    <Compile Include="Assets\Scripts\Players\PlayerEnum.cs" />
+    <Compile Include="Assets\Scripts\Players\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\Units\Unit.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/GitRepos/give-no-quarter/GNQ-Prototype/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

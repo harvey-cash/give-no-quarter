@@ -7,28 +7,26 @@ public class District : MonoBehaviour
     public Tile[,] tiles { private set; get; }
 
     // Start is called before the first frame update
-    void Start()
-    {
-        int x = Mathf.RoundToInt(transform.localScale.x);
-        int z = Mathf.RoundToInt(transform.localScale.z);
+    public void Initialise(int districtWidth, int districtDepth) {
 
-        int territoryDepth = Mathf.FloorToInt(z / 2f);
+        int territoryDepth = Mathf.FloorToInt(districtDepth / 2f);
 
-        tiles = new Tile[x, z];
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < z; j++) {
+        tiles = new Tile[districtWidth, districtDepth];
+        for (int i = 0; i < districtWidth; i++) {
+            for (int j = 0; j < districtDepth; j++) {
                 Vector3 pos = new Vector3(i, 0, j);
-                PlayerEnum affiliation;
-                if (j < territoryDepth) { affiliation = PlayerEnum.US; }
-                else if (j >= z - territoryDepth) { affiliation = PlayerEnum.THEM; }
-                else { affiliation = PlayerEnum.NEITHER; }
+                Player team;
+                if (j < territoryDepth) { team = PlayerManager.us; }
+                else if (j >= districtDepth - territoryDepth) { team = PlayerManager.them; }
+                else { team = null; }
 
                 GameObject tileObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                tileObject.transform.parent = this.transform;
                 tileObject.transform.localScale = new Vector3(0.9f, 0.1f, 0.9f);
-                tileObject.transform.localPosition = pos;
+                tileObject.transform.localPosition = pos;                
 
                 Tile tile = tileObject.AddComponent<Tile>();
-                tile.Initialise(pos, affiliation);
+                tile.Initialise(this, pos, team);
                 
                 tiles[i, j] = tile;
             }
