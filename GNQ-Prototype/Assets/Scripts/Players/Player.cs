@@ -34,7 +34,10 @@ public class Player : MonoBehaviour
 
     public void PreparationClick(Tile targetTile) {
         if (targetTile.team == team) {
-            Unit.Build(targetTile.district, targetTile, this);
+
+            if (targetTile.unit == null) {
+                Unit.Build(targetTile.district, targetTile, this);
+            }
         }
     }
 

@@ -10,6 +10,8 @@ public class GameMaster : MonoBehaviour
     }
 
     public UIManager ui;
+    public CameraControl cameraController;
+
     public Player activePlayer { private set; get; }
     public GameState state;
 
@@ -22,13 +24,13 @@ public class GameMaster : MonoBehaviour
         ui.UpdatePlayer(activePlayer.team);
     }
 
-    public void EndTurn(Player currentPlayer) {
-        Debug.Log("hi!");
+    public void EndTurn() {
 
         Player nextPlayer = PlayerManager.them;
-        if (currentPlayer == PlayerManager.them) { nextPlayer = PlayerManager.us; }
+        if (activePlayer == PlayerManager.them) { nextPlayer = PlayerManager.us; }
 
         ui.UpdatePlayer(nextPlayer.team);
+        cameraController.MoveCamera(nextPlayer.team);
 
         // ...
 
