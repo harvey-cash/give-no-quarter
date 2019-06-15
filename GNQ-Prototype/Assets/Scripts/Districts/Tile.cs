@@ -88,7 +88,6 @@ public class Tile : MonoBehaviour
         // Nothing selected
         if (activePlayer.selectedTile == null) {
             if (unit != null && unit.team == activePlayer.team) {
-                Highlight(HighlightEnum.NORMAL);
                 activePlayer.selectedTile = this;
                 Highlight(HighlightEnum.FOCUS);
             }
@@ -103,7 +102,7 @@ public class Tile : MonoBehaviour
             );
 
             if (success) {
-                Highlight(HighlightEnum.NORMAL);
+                activePlayer.selectedTile.Highlight(HighlightEnum.NORMAL);
                 activePlayer.selectedTile = null;
             }
         }

@@ -10,6 +10,13 @@ public class Map : MonoBehaviour
 
     public CameraControl cameraControl;
 
+    public Vector3 center { private set; get; }
+    public float totalWidth { private set; get; }
+
+    private void Awake() {
+        cameraControl.map = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,10 +26,10 @@ public class Map : MonoBehaviour
             districts[i] = district;
         }
 
-        float totalLength = districts.Length * (districtWidth + spacing) - spacing;
-        cameraControl.transform.position = new Vector3(totalLength / 2f, 0, districtDepth / 2f);
-        float orthogSize = totalLength / 4f + 3;
-        cameraControl.GetComponentInChildren<Camera>().orthographicSize = orthogSize;
+        totalWidth = districts.Length * (districtWidth + spacing) - spacing;
+        center = new Vector3(totalWidth / 2f, 0, districtDepth / 2f);
+        cameraControl.transform.position = center;
+        cameraControl.CalcOrthogSize(totalWidth);
     }
 
     public void UpdateState(GameState state) {

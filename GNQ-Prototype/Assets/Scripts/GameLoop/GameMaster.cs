@@ -36,12 +36,36 @@ public class GameMaster : MonoBehaviour
         PlayerEnum nextPlayer = stateMachine.EndTurn();
         SetActivePlayer(nextPlayer);
         UpdateState(stateMachine.state);
+
+        // Runs once after preparations are complete
+        DisableUnitColliders();
+    }
+
+    private bool finishedPrep = false;
+    private void DisableUnitColliders() {
+        if (!finishedPrep && stateMachine.state == GameState.PICK_US || stateMachine.state == GameState.PICK_THEM) {
+            finishedPrep = true;
+
+            for (int i = 0; i < map.districts.Length; i++) {
+                map.districts[i].EnableUnitColliders(false);
+            }
+        }
     }
 
     // Update UI and Map appropriately
     public void UpdateState(GameState state) {
         ui.UpdateState(stateMachine.state);
         map.UpdateState(stateMachine.state);
+
+        if (state == GameState.TURN_THEM || state == GameState.TURN_US) {
+            cameraController.SwitchDistrict(activePlayer.pickedDistrict);
+            cameraController.SwitchView(false);
+            activePlayer.pickedDistrict.EnableUnitColliders(true);
+        }
+        else {
+            cameraController.SwitchDistrict(null);
+            cameraController.SwitchView(true);
+        }
     }
 
     // Called on EndTurn, update UI and move Camera appropriately
@@ -50,7 +74,7 @@ public class GameMaster : MonoBehaviour
         if (player == PlayerEnum.THEM) { activePlayer = PlayerManager.them; }
 
         ui.UpdatePlayer(activePlayer.team);
-        cameraController.MoveCamera(activePlayer.team);
+        cameraController.SwitchPlayer(activePlayer.team);
         return;
     }
 

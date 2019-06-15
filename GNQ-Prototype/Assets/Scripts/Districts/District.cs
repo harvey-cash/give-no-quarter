@@ -6,7 +6,8 @@ public class District : MonoBehaviour
 {
     public Tile[,] tiles { private set; get; }
 
-    private Vector3 center;
+    public Vector3 center { private set; get; }
+    public BoxCollider pickCollider;
 
     private GameObject districtBase;
     private Color districtNormal = new Color(0.8f, 0.8f, 0.8f);
@@ -29,7 +30,7 @@ public class District : MonoBehaviour
                 GameObject tileObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 tileObject.transform.parent = this.transform;
                 tileObject.transform.localScale = new Vector3(0.9f, 0.1f, 0.9f);
-                tileObject.transform.localPosition = pos;                
+                tileObject.transform.localPosition = pos;
 
                 Tile tile = tileObject.AddComponent<Tile>();
                 tile.Initialise(this, pos, team);
@@ -56,6 +57,16 @@ public class District : MonoBehaviour
         districtBase.GetComponent<Renderer>().material.color = districtNormal;
     }
 
+    // While turns are happening, can't click on other districts!
+    public void EnableUnitColliders(bool enabled) {
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        for (int i = 0; i < colliders.Length; i++) {
+            Collider collider = colliders[i];
+
+            if (collider != pickCollider) { collider.enabled = enabled; }
+        }
+    }
+
     // Create a district object and return it
     public static District BuildDistrict(Map map, int districtIndex, int districtWidth, int districtDepth, float spacing) {
         GameObject districtObject = new GameObject("District: " + districtIndex);
@@ -79,6 +90,7 @@ public class District : MonoBehaviour
         Destroy(districtBase.GetComponent<Collider>());
 
         district.districtBase = districtBase;
+        district.pickCollider = collider;
         district.center = center;
 
         return district;
