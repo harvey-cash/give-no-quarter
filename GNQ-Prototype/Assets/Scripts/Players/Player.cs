@@ -15,16 +15,22 @@ public class Player : MonoBehaviour
         if (team == PlayerEnum.THEM) { PlayerManager.them = this; }
     }
 
-    // ~~~~~~~~~~ PLAYER ACTIONS. ~~~~~~~~~~ //
+    // ~~~~~~~~~~ PLAYER ACTIONS ~~~~~~~~~~ //
 
     public void ClickTile(Tile targetTile) {
-        if (GameMaster.game.state == GameState.PREPARE) {
+        if (GameMaster.stateMachine.state == GameState.PREPARE_US 
+            || GameMaster.stateMachine.state == GameState.PREPARE_THEM) {
+
             PreparationClick(targetTile);
         }
-        else if (GameMaster.game.state == GameState.MAP_VIEW) {
+        else if (GameMaster.stateMachine.state == GameState.PICK_US
+            || GameMaster.stateMachine.state == GameState.PICK_THEM) {
+
             MapViewClick(targetTile);
         }
-        else if (GameMaster.game.state == GameState.DISTRICT_VIEW) {
+        else if (GameMaster.stateMachine.state == GameState.TURN_US
+            || GameMaster.stateMachine.state == GameState.TURN_THEM) {
+
             DistrictViewClick(targetTile);
         }
         else {
