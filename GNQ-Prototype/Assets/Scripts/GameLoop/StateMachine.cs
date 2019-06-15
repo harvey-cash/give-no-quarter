@@ -19,20 +19,40 @@ public class StateMachine
 
     public PlayerEnum EndTurn() {
         if (state == GameState.PREPARE_US) { state = GameState.PREPARE_THEM; return PlayerEnum.THEM; }
-        if (state == GameState.PREPARE_THEM) { state = GameState.PICK_US; return PlayerEnum.US; }
-        if (state == GameState.PICK_US) { state = GameState.PICK_THEM; return PlayerEnum.THEM; }
+
+        // For now, assume always US then THEM
+        if (state == GameState.PREPARE_THEM) {
+            state = GameState.PICK_US;
+            roundCounter++;
+            return PlayerEnum.US;
+        }
+        if (state == GameState.PICK_US) {
+            state = GameState.PICK_THEM;
+            return PlayerEnum.THEM;
+        }
+
         if (state == GameState.PICK_THEM) { state = GameState.TURN_US; return PlayerEnum.US; }
 
         if (state == GameState.TURN_US) {
             turnCounter++;
             if (turnCounter < TURNS_PER_ROUND) { state = GameState.TURN_THEM; return PlayerEnum.THEM; }
-            else { state = GameState.PICK_US; return PlayerEnum.US; }
+            else {
+                roundCounter++;
+                turnCounter = 0;
+                state = GameState.PICK_US;
+                return PlayerEnum.US;
+            }
         }
 
         if (state == GameState.TURN_THEM) {
             turnCounter++;
             if (turnCounter < TURNS_PER_ROUND) { state = GameState.TURN_US; return PlayerEnum.US; }
-            else { state = GameState.PICK_US; return PlayerEnum.US; }
+            else {
+                roundCounter++;
+                turnCounter = 0;
+                state = GameState.PICK_US;
+                return PlayerEnum.US;
+            }
         }
 
         throw new Exception("Invalid game state?");

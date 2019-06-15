@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+public class Unit : MonoBehaviour, ISelectable
 {
     // Build a Unit Workshop!
     public static Unit Build(District district, Tile tile, Player player) {
@@ -14,10 +14,13 @@ public class Unit : MonoBehaviour
 
         Unit unit = unitObject.AddComponent<Unit>();
         unit.Initialise(player);
+        unit.district = district;
         tile.unit = unit;
 
         return unit;
     }
+
+    public District district;
 
     public PlayerEnum team { private set; get; }
 
@@ -70,5 +73,7 @@ public class Unit : MonoBehaviour
         if (select == HighlightEnum.NORMAL) { GetComponent<Renderer>().material.color = normalUnitColor; }
         if (select == HighlightEnum.HIGHLIGHT) { GetComponent<Renderer>().material.color = highlightUnitColor; }
         if (select == HighlightEnum.FOCUS) { GetComponent<Renderer>().material.color = selectUnitColor; }
+
+        if (select == HighlightEnum.DEFOCUS) { GetComponent<Renderer>().material.color = district.map.deselectUnit; }
     }
 }

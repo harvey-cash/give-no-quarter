@@ -14,4 +14,10 @@ public class UIManager : MonoBehaviour
     public void UpdateState(GameState state) {
         currentState.text = state.ToString().ToUpper();
     }
+
+    public Text roundText, turnText;
+    public void UpdateCounters(int round, int turn) {
+        roundText.text = "Round: " + round;
+        turnText.text = "Turn: " + turn;
+    }
 }

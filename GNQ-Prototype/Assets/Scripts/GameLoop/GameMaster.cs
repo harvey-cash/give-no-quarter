@@ -17,8 +17,6 @@ public class GameMaster : MonoBehaviour
     public Player activePlayer { private set; get; }
     public static StateMachine stateMachine;
 
-    public Color normalNoMans, highlightNoMans, selectNoMans;
-
     void Start()
     {
         stateMachine = new StateMachine(6, GameState.PREPARE_US);
@@ -33,6 +31,10 @@ public class GameMaster : MonoBehaviour
 
     // Called by player when EndTurn button is clicked
     public void EndTurn() {
+        if (activePlayer.pickedDistrict != null) {
+            activePlayer.pickedDistrict.EnableColliders(false);
+        }
+
         PlayerEnum nextPlayer = stateMachine.EndTurn();
         SetActivePlayer(nextPlayer);
         UpdateState(stateMachine.state);
@@ -47,7 +49,7 @@ public class GameMaster : MonoBehaviour
             finishedPrep = true;
 
             for (int i = 0; i < map.districts.Length; i++) {
-                map.districts[i].EnableUnitColliders(false);
+                map.districts[i].EnableColliders(false);
             }
         }
     }
@@ -55,16 +57,20 @@ public class GameMaster : MonoBehaviour
     // Update UI and Map appropriately
     public void UpdateState(GameState state) {
         ui.UpdateState(stateMachine.state);
+        ui.UpdateCounters(stateMachine.roundCounter, stateMachine.turnCounter);
         map.UpdateState(stateMachine.state);
 
         if (state == GameState.TURN_THEM || state == GameState.TURN_US) {
             cameraController.SwitchDistrict(activePlayer.pickedDistrict);
             cameraController.SwitchView(false);
-            activePlayer.pickedDistrict.EnableUnitColliders(true);
+            
+            activePlayer.pickedDistrict.EnableColliders(true);
+            map.FocusOnDistrict(activePlayer.pickedDistrict);
         }
         else {
             cameraController.SwitchDistrict(null);
             cameraController.SwitchView(true);
+            map.FocusOnDistrict(null);
         }
     }
 

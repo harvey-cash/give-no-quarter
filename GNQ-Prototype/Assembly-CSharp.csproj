@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\GameLoop\GameState.cs" />
     <Compile Include="Assets\Scripts\GameLoop\StateMachine.cs" />
     <Compile Include="Assets\Scripts\HighlightEnum.cs" />
+    <Compile Include="Assets\Scripts\Interface\ISelectable.cs" />
     <Compile Include="Assets\Scripts\Interface\UIManager.cs" />
     <Compile Include="Assets\Scripts\Map.cs" />
     <Compile Include="Assets\Scripts\Players\Player.cs" />

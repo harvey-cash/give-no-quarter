@@ -2,4 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum HighlightEnum { NORMAL, HIGHLIGHT, FOCUS, DEFOCUS }
+public interface ISelectable {
+
+    void Highlight(HighlightEnum highlight);
+
+}

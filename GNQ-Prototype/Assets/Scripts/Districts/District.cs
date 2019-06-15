@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class District : MonoBehaviour
+public class District : MonoBehaviour, ISelectable
 {
+    public Map map { private set; get; }
     public Tile[,] tiles { private set; get; }
 
     public Vector3 center { private set; get; }
@@ -14,7 +15,8 @@ public class District : MonoBehaviour
     private Color districtHighlight = new Color(1f, 1f, 1f);
 
     // Start is called before the first frame update
-    public void Initialise(int districtWidth, int districtDepth) {
+    public void Initialise(Map map, int districtWidth, int districtDepth) {
+        this.map = map;
 
         int territoryDepth = Mathf.FloorToInt(districtDepth / 2f);
 
@@ -49,22 +51,40 @@ public class District : MonoBehaviour
     private void OnMouseEnter() {
         transform.localPosition = new Vector3(transform.localPosition.x, 0.2f, transform.localPosition.z);
         GetComponent<BoxCollider>().center = center + Vector3.down * 0.2f;
-        districtBase.GetComponent<Renderer>().material.color = districtHighlight;
+        Highlight(HighlightEnum.HIGHLIGHT);
     }
     private void OnMouseExit() {
         transform.localPosition = new Vector3(transform.localPosition.x, 0, transform.localPosition.z);
         GetComponent<BoxCollider>().center = center;
-        districtBase.GetComponent<Renderer>().material.color = districtNormal;
+        Highlight(HighlightEnum.NORMAL);
     }
 
     // While turns are happening, can't click on other districts!
-    public void EnableUnitColliders(bool enabled) {
+    public void EnableColliders(bool enabled) {
         Collider[] colliders = GetComponentsInChildren<Collider>();
         for (int i = 0; i < colliders.Length; i++) {
             Collider collider = colliders[i];
 
             if (collider != pickCollider) { collider.enabled = enabled; }
         }
+    }
+
+    public void DefocusDistrict(bool defocus) {
+        ISelectable[] selectables = GetComponentsInChildren<ISelectable>();
+        for (int i = 0; i < selectables.Length; i++) {
+            if (!defocus) { selectables[i].Highlight(HighlightEnum.NORMAL); }
+            else { selectables[i].Highlight(HighlightEnum.DEFOCUS); }
+        }
+    }
+
+    // ~~~~~~~~~~ HIGHLIGHTING ~~~~~~~~ //
+
+    public void Highlight(HighlightEnum select) {
+        if (select == HighlightEnum.NORMAL) { districtBase.GetComponent<Renderer>().material.color = districtNormal; }
+        if (select == HighlightEnum.HIGHLIGHT) { districtBase.GetComponent<Renderer>().material.color = districtHighlight; }
+        if (select == HighlightEnum.FOCUS) { return; }
+
+        if (select == HighlightEnum.DEFOCUS) { districtBase.GetComponent<Renderer>().material.color = map.deselectDistrict; }
     }
 
     // Create a district object and return it
@@ -80,7 +100,7 @@ public class District : MonoBehaviour
         collider.size = new Vector3(districtWidth, 1, districtDepth);
 
         District district = districtObject.AddComponent<District>();
-        district.Initialise(districtWidth, districtDepth);
+        district.Initialise(map, districtWidth, districtDepth);
 
         GameObject districtBase = GameObject.CreatePrimitive(PrimitiveType.Cube);
         districtBase.transform.parent = districtObject.transform;

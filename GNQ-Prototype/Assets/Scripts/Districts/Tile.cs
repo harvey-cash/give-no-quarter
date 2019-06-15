@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile : MonoBehaviour
+public class Tile : MonoBehaviour, ISelectable
 {
     public District district { private set; get; }
     public PlayerEnum team { private set; get; }
@@ -23,9 +23,9 @@ public class Tile : MonoBehaviour
             selectTileColor = player.selectTileColor;
         }
         else {
-            normalTileColor = GameMaster.game.normalNoMans;
-            highlightTileColor = GameMaster.game.highlightNoMans;
-            selectTileColor = GameMaster.game.selectNoMans;
+            normalTileColor = district.map.normalNoMans;
+            highlightTileColor = district.map.highlightNoMans;
+            selectTileColor = district.map.selectNoMans;
         }
 
         Highlight(HighlightEnum.NORMAL);
@@ -137,5 +137,7 @@ public class Tile : MonoBehaviour
         if (select == HighlightEnum.NORMAL) { GetComponent<Renderer>().material.color = normalTileColor; }
         if (select == HighlightEnum.HIGHLIGHT) { GetComponent<Renderer>().material.color = highlightTileColor; }
         if (select == HighlightEnum.FOCUS) { GetComponent<Renderer>().material.color = selectTileColor; }
+
+        if (select == HighlightEnum.DEFOCUS) { GetComponent<Renderer>().material.color = district.map.deselectTile; }
     }
 }

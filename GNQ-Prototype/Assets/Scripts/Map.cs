@@ -13,6 +13,9 @@ public class Map : MonoBehaviour
     public Vector3 center { private set; get; }
     public float totalWidth { private set; get; }
 
+    public Color normalNoMans, highlightNoMans, selectNoMans;
+    public Color deselectDistrict, deselectTile, deselectUnit;
+
     private void Awake() {
         cameraControl.map = this;
     }
@@ -30,6 +33,19 @@ public class Map : MonoBehaviour
         center = new Vector3(totalWidth / 2f, 0, districtDepth / 2f);
         cameraControl.transform.position = center;
         cameraControl.CalcOrthogSize(totalWidth);
+    }
+
+    public void FocusOnDistrict(District focusDistrict) {
+        bool defocus = false;
+
+        if (focusDistrict != null) {
+            defocus = true;
+            focusDistrict.DefocusDistrict(false);
+        }
+
+        for (int i = 0; i < districts.Length; i++) {
+            if (districts[i] != focusDistrict) { districts[i].DefocusDistrict(defocus); }
+        }
     }
 
     public void UpdateState(GameState state) {
