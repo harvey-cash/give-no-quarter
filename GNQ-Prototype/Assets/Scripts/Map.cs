@@ -8,23 +8,28 @@ public class Map : MonoBehaviour
     public float spacing;
     public District[] districts { private set; get; }
 
+    public CameraControl cameraControl;
+
     // Start is called before the first frame update
     void Start()
     {
         districts = new District[districtCount];
         for (int i = 0; i < districtCount; i++) {
-            GameObject districtObject = new GameObject("District: " + i);
-            districtObject.transform.parent = this.transform;
-            districtObject.transform.localPosition = Vector3.right * i * (districtWidth + spacing);
-
-            District district = districtObject.AddComponent<District>();
-            district.Initialise(districtWidth, districtDepth);
+            District district = District.BuildDistrict(this, i, districtWidth, districtDepth, spacing);
+            districts[i] = district;
         }
+
+        float totalLength = districts.Length * (districtWidth + spacing) - spacing;
+        cameraControl.transform.position = new Vector3(totalLength / 2f, 0, districtDepth / 2f);
+        float orthogSize = totalLength / 4f + 3;
+        cameraControl.GetComponentInChildren<Camera>().orthographicSize = orthogSize;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void UpdateState(GameState state) {
+        bool enabled = (state == GameState.PICK_THEM || state == GameState.PICK_US);
+
+        for (int i = 0; i < districts.Length; i++) {
+            districts[i].GetComponent<Collider>().enabled = enabled;
+        }
     }
 }

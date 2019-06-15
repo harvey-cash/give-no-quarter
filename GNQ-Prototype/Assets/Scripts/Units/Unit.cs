@@ -56,7 +56,7 @@ public class Unit : MonoBehaviour
 
         if (targetTile.unit == null) {
             currentTile.unit = null;
-            transform.position = targetTile.coords;
+            transform.localPosition = targetTile.coords;
             targetTile.unit = this;
         }
         else {
