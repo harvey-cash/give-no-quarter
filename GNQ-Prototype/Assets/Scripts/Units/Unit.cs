@@ -76,4 +76,10 @@ public class Unit : MonoBehaviour, ISelectable
 
         if (select == HighlightEnum.DEFOCUS) { GetComponent<Renderer>().material.color = district.map.deselectUnit; }
     }
+
+    public static GameObject CreateUnit(AssetEnum assetType) {
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.transform.localScale = Vector3.one * 0.5f;
+        return cube;
+    }
 }

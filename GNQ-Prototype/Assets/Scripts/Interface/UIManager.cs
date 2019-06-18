@@ -20,4 +20,16 @@ public class UIManager : MonoBehaviour
         roundText.text = "Round: " + round;
         turnText.text = "Turn: " + turn;
     }
+
+    public GameObject assetPanel;
+    public void ShowAssetPanel(bool enabled) {
+        assetPanel.SetActive(enabled);
+    }
+    public List<AssetCreator> assetCreators;
+    public void UpdateAssetQuantities(Dictionary<AssetEnum, int> assetAllowance) {
+        for (int i = 0; i < assetCreators.Count; i++) {
+            assetCreators[i].SetQuantity(assetAllowance);
+        }
+    }
+    
 }

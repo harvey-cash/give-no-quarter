@@ -70,9 +70,9 @@ public class Tile : MonoBehaviour, ISelectable
         Player activePlayer = GameMaster.game.activePlayer;
 
         if (team == activePlayer.team) {
-
-            if (unit == null) {
+            if (unit == null && activePlayer.unInitAsset != null) {
                 Unit.Build(district, this, activePlayer);
+                activePlayer.BuiltUnit();
             }
         }
     }

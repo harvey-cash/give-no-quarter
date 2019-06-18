@@ -17,6 +17,9 @@ public class GameMaster : MonoBehaviour
     public Player activePlayer { private set; get; }
     public static StateMachine stateMachine;
 
+    public List<AssetEnum> assetTypes;
+    public List<int> assetAllowances;
+
     void Start()
     {
         stateMachine = new StateMachine(6, GameState.PREPARE_US);
@@ -59,6 +62,12 @@ public class GameMaster : MonoBehaviour
         ui.UpdateState(stateMachine.state);
         ui.UpdateCounters(stateMachine.roundCounter, stateMachine.turnCounter);
         map.UpdateState(stateMachine.state);
+
+        if (state == GameState.PREPARE_THEM || state == GameState.PREPARE_US) {
+            ui.ShowAssetPanel(true);
+            ui.UpdateAssetQuantities(activePlayer.assetAllowance);
+        }
+        else { ui.ShowAssetPanel(false); }
 
         if (state == GameState.TURN_THEM || state == GameState.TURN_US) {
             cameraController.SwitchDistrict(activePlayer.pickedDistrict);
