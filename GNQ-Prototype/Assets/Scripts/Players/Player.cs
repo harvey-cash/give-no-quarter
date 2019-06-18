@@ -34,17 +34,16 @@ public class Player : MonoBehaviour
         GameMaster.game.ui.UpdateAssetQuantities(assetAllowance);
     }
 
-    public GameObject unInitAsset;
+    public IPlaceable unInitAsset;
     private AssetCreator assetCreator;
 
-    public void OnAssetClick(AssetCreator creator, AssetEnum assetType) {
-        if (assetAllowance[assetType] <= 0) { return; }
+    public void OnAssetClick(AssetCreator creator) {
+        if (assetAllowance[creator.assetType] <= 0) { return; }
 
-        if (unInitAsset != null) { Destroy(unInitAsset); }
+        if (unInitAsset != null) { Destroy(unInitAsset.GetGameObject()); }
         else {
             assetCreator = creator;
-            unInitAsset = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Destroy(unInitAsset.GetComponent<Collider>());
+            unInitAsset = Instantiate(assetCreator.asset).GetComponent<IPlaceable>(); ;
         }
     }
 
@@ -54,16 +53,17 @@ public class Player : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit)) {
                 Vector3 pos = new Vector3(
                     Mathf.RoundToInt(hit.point.x),
-                    hit.point.y + unInitAsset.transform.localScale.y / 2f, 
+                    hit.point.y + unInitAsset.GetGameObject().transform.localScale.y / 2f, 
                     Mathf.RoundToInt(hit.point.z)
                 );
-                unInitAsset.transform.position = pos;
+                unInitAsset.GetGameObject().transform.position = pos;
             }
         }
     }
 
-    public void BuiltUnit() {
-        Destroy(unInitAsset);
+    public void BuildAsset(District district, Tile tile) {
+        unInitAsset.InitialiseAsset(district, tile, this);
+        unInitAsset = null;
         assetAllowance[assetCreator.assetType]--;
         GameMaster.game.ui.UpdateAssetQuantities(assetAllowance);
     }

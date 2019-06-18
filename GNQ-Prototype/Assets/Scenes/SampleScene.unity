@@ -667,7 +667,6 @@ MonoBehaviour:
   selectedTile: {fileID: 0}
   pickedDistrict: {fileID: 0}
   teamColor: {r: 0.6037736, g: 0.12815951, b: 0.12815951, a: 0}
-  unInitAsset: {fileID: 0}
   normalUnitColor: {r: 0.7924528, g: 0.48967603, b: 0.48967603, a: 0}
   highlightUnitColor: {r: 0.7735849, g: 0.36912748, b: 0.26637593, a: 0}
   selectUnitColor: {r: 0.7830189, g: 0.21936764, b: 0.1735938, a: 0}
@@ -838,7 +837,6 @@ MonoBehaviour:
   selectedTile: {fileID: 0}
   pickedDistrict: {fileID: 0}
   teamColor: {r: 0.15690638, g: 0.3575235, b: 0.7735849, a: 0}
-  unInitAsset: {fileID: 0}
   normalUnitColor: {r: 0.63923997, g: 0.66125715, b: 0.8018868, a: 0}
   highlightUnitColor: {r: 0.56256676, g: 0.62461734, b: 0.9245283, a: 0}
   selectUnitColor: {r: 0.246707, g: 0.27701777, b: 0.8301887, a: 0}
@@ -1517,6 +1515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6283988f50edc342bb21ff68a631e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asset: {fileID: 1438753447524296383, guid: 884a9dab2a3af8d4a82a588c4db3e104, type: 3}
   assetType: 0
   quantityText: {fileID: 1298077437}
 --- !u!114 &768180710
@@ -1607,6 +1606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6283988f50edc342bb21ff68a631e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asset: {fileID: 6950016018477267069, guid: 7064fbaea5bee474dab85e11da785306, type: 3}
   assetType: 2
   quantityText: {fileID: 322897534}
 --- !u!114 &951875088
@@ -2199,6 +2199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6283988f50edc342bb21ff68a631e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asset: {fileID: 4883746329820265823, guid: e45ef69de91e23b458771908034ecb73, type: 3}
   assetType: 1
   quantityText: {fileID: 130351900}
 --- !u!114 &1508560119

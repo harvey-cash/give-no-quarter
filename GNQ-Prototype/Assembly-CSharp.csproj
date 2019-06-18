@@ -62,6 +62,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Assets\Asset.cs" />
+    <Compile Include="Assets\Scripts\Assets\AssetEnum.cs" />
+    <Compile Include="Assets\Scripts\Assets\Buildings\Building.cs" />
+    <Compile Include="Assets\Scripts\Assets\Buildings\HeadQuarters.cs" />
+    <Compile Include="Assets\Scripts\Assets\IPlaceable.cs" />
+    <Compile Include="Assets\Scripts\Assets\ISelectable.cs" />
+    <Compile Include="Assets\Scripts\Assets\Units\Bishop.cs" />
+    <Compile Include="Assets\Scripts\Assets\Units\Rook.cs" />
+    <Compile Include="Assets\Scripts\Assets\Units\Unit.cs" />
     <Compile Include="Assets\Scripts\CameraStuff\CameraControl.cs" />
     <Compile Include="Assets\Scripts\Districts\District.cs" />
     <Compile Include="Assets\Scripts\Districts\Tile.cs" />
@@ -75,10 +84,6 @@
     <Compile Include="Assets\Scripts\Players\Player.cs" />
     <Compile Include="Assets\Scripts\Players\PlayerEnum.cs" />
     <Compile Include="Assets\Scripts\Players\PlayerManager.cs" />
-    <Compile Include="Assets\Scripts\Units\AssetEnum.cs" />
-    <Compile Include="Assets\Scripts\Units\IPlaceable.cs" />
-    <Compile Include="Assets\Scripts\Units\ISelectable.cs" />
-    <Compile Include="Assets\Scripts\Units\Unit.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/GitRepos/give-no-quarter/GNQ-Prototype/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

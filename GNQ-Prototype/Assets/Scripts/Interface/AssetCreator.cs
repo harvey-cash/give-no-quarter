@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class AssetCreator : MonoBehaviour, IPointerClickHandler
 {
+    public GameObject asset;
     public AssetEnum assetType;
     public Text quantityText;
 
@@ -15,6 +16,6 @@ public class AssetCreator : MonoBehaviour, IPointerClickHandler
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        GameMaster.game.activePlayer.OnAssetClick(this, assetType);
+        GameMaster.game.activePlayer.OnAssetClick(this);
     }
 }

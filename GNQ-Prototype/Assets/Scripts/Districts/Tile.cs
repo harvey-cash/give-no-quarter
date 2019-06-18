@@ -8,7 +8,7 @@ public class Tile : MonoBehaviour, ISelectable
     public District district { private set; get; }
     public PlayerEnum team { private set; get; }
     public Vector3 coords { private set; get; }
-    public Unit unit;
+    public Asset asset;
 
     private Color normalTileColor, highlightTileColor, selectTileColor;
 
@@ -70,9 +70,8 @@ public class Tile : MonoBehaviour, ISelectable
         Player activePlayer = GameMaster.game.activePlayer;
 
         if (team == activePlayer.team) {
-            if (unit == null && activePlayer.unInitAsset != null) {
-                Unit.Build(district, this, activePlayer);
-                activePlayer.BuiltUnit();
+            if (asset == null && activePlayer.unInitAsset != null) {                
+                activePlayer.BuildAsset(district, this);
             }
         }
     }
@@ -87,21 +86,16 @@ public class Tile : MonoBehaviour, ISelectable
 
         // Nothing selected
         if (activePlayer.selectedTile == null) {
-            if (unit != null && unit.team == activePlayer.team) {
+            if (asset != null && asset.team == activePlayer.team) {
                 activePlayer.selectedTile = this;
                 Highlight(HighlightEnum.FOCUS);
             }
         }
-        // Something selected (own team)
+        // Some tile of some (friendly) asset is selected
         else {
-            activePlayer.selectedTile.unit.ActUpon(
-                activePlayer, 
-                activePlayer.selectedTile, 
-                this, 
-                out bool success
-            );
-
-            if (success) {
+            Asset asset = activePlayer.selectedTile.asset;
+            asset.ClickSomeTile(activePlayer, activePlayer.selectedTile, this, out bool nowDeselect);
+            if (nowDeselect) {
                 activePlayer.selectedTile.Highlight(HighlightEnum.NORMAL);
                 activePlayer.selectedTile = null;
             }
@@ -114,14 +108,15 @@ public class Tile : MonoBehaviour, ISelectable
         Player activePlayer = GameMaster.game.activePlayer;
 
         // Deal with old mouseOverTile first
-        if (activePlayer.selectedTile 
-            != activePlayer.mouseOverTile) {
+        if (activePlayer.selectedTile != activePlayer.mouseOverTile) {
             Highlight(HighlightEnum.NORMAL);
         }
         activePlayer.mouseOverTile = this;
 
-        // New tile
-        if (activePlayer.selectedTile != this) { Highlight(HighlightEnum.HIGHLIGHT); }
+        if (activePlayer.selectedTile == this) {
+            Highlight(HighlightEnum.FOCUS);
+        }
+        else { Highlight(HighlightEnum.HIGHLIGHT); }
     }
 
     public void MouseExitTile() {
@@ -132,7 +127,7 @@ public class Tile : MonoBehaviour, ISelectable
     }
 
     public void Highlight(HighlightEnum select) {
-        if (unit != null) { unit.Highlight(select); }
+        if (asset != null) { asset.Highlight(select); }
 
         if (select == HighlightEnum.NORMAL) { GetComponent<Renderer>().material.color = normalTileColor; }
         if (select == HighlightEnum.HIGHLIGHT) { GetComponent<Renderer>().material.color = highlightTileColor; }
