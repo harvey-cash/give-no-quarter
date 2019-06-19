@@ -31,5 +31,10 @@ public class UIManager : MonoBehaviour
             assetCreators[i].SetQuantity(assetAllowance);
         }
     }
+
+    public GameObject endTurnButton;
+    public void ShowEndTurn(bool enabled) {
+        endTurnButton.SetActive(enabled);
+    }
     
 }

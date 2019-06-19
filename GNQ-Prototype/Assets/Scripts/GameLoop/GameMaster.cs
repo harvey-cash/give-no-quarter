@@ -34,17 +34,25 @@ public class GameMaster : MonoBehaviour
 
     // Called by player when EndTurn button is clicked
     public void EndTurn() {
-        activePlayer.selectedTile = null;
-        if (activePlayer.pickedDistrict != null) {
-            activePlayer.pickedDistrict.EnableColliders(false);
-        }
+        DeselectCurrentTile();
 
         PlayerEnum nextPlayer = stateMachine.EndTurn();
         SetActivePlayer(nextPlayer);
         UpdateState(stateMachine.state);
 
         // Runs once after preparations are complete
-        DisableUnitColliders();
+        //DisableUnitColliders();
+    }
+
+    private void DeselectCurrentTile() {
+        // Cleanup, deselect current tile
+        if (activePlayer.selectedTile != null) {
+            activePlayer.selectedTile.DoSelect(false);
+            if (activePlayer.selectedTile.asset != null) {
+                activePlayer.selectedTile.asset.DoSelect(false);
+            }
+        }
+        activePlayer.selectedTile = null;
     }
 
     private bool finishedPrep = false;
@@ -53,7 +61,7 @@ public class GameMaster : MonoBehaviour
             finishedPrep = true;
 
             for (int i = 0; i < map.districts.Length; i++) {
-                map.districts[i].EnableColliders(false);
+                //map.districts[i].EnableColliders(false);
             }
         }
     }
@@ -68,19 +76,20 @@ public class GameMaster : MonoBehaviour
             ui.ShowAssetPanel(true);
             ui.UpdateAssetQuantities(activePlayer.assetAllowance);
         }
-        else { ui.ShowAssetPanel(false); }
+        else {
+            ui.ShowAssetPanel(false);
+            ui.ShowEndTurn(false);
+        }
 
         if (state == GameState.TURN_THEM || state == GameState.TURN_US) {
             cameraController.SwitchDistrict(activePlayer.pickedDistrict);
             cameraController.SwitchView(false);
-            
-            activePlayer.pickedDistrict.EnableColliders(true);
-            map.FocusOnDistrict(activePlayer.pickedDistrict);
+            map.FocusOnDistrict(activePlayer.pickedDistrict, state);
         }
         else {
             cameraController.SwitchDistrict(null);
             cameraController.SwitchView(true);
-            map.FocusOnDistrict(null);
+            map.FocusOnDistrict(null, state);
         }
     }
 
@@ -89,8 +98,10 @@ public class GameMaster : MonoBehaviour
         activePlayer = PlayerManager.us;
         if (player == PlayerEnum.THEM) { activePlayer = PlayerManager.them; }
 
+        activePlayer.BeginTurn();
         ui.UpdatePlayer(activePlayer.team);
         cameraController.SwitchPlayer(activePlayer.team);
+
         return;
     }
 

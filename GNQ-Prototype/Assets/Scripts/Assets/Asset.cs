@@ -7,7 +7,9 @@ public abstract class Asset : SelectableObject, IPlaceable {
     public District district;
     public PlayerEnum team { protected set; get; }
 
-    public GameObject GetGameObject() { return gameObject; }
+    public GameObject GetGameObject() {        
+        return gameObject;
+    }
 
     public abstract void OnSelect(District district, Tile tile);
     public abstract void HoverOverSomeTile(Player actingPlayer, Tile currentTile, Tile targetTile);
@@ -40,5 +42,16 @@ public abstract class Asset : SelectableObject, IPlaceable {
             GameMaster.game.map.rangeAsset,
             GameMaster.game.map.notRangeAsset
         );
+    }
+
+    private int viewRadius = 3;
+    public (int, int)[] GetViewSphere() {
+        List<(int, int)> coords = new List<(int, int)>();
+        for (int dX = -viewRadius; dX <= viewRadius; dX++) {
+            for (int dZ = -viewRadius; dZ <= viewRadius; dZ++) {
+                coords.Add((dX, dZ));
+            }
+        }
+        return coords.ToArray();
     }
 }

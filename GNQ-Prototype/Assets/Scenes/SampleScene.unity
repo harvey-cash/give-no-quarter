@@ -1346,6 +1346,7 @@ MonoBehaviour:
   - {fileID: 768180709}
   - {fileID: 951875087}
   - {fileID: 1508560118}
+  endTurnButton: {fileID: 1861327459}
 --- !u!1 &754070191
 GameObject:
   m_ObjectHideFlags: 0
@@ -1937,7 +1938,7 @@ MonoBehaviour:
   cameraController: {fileID: 1089408891}
   map: {fileID: 1271442288}
   assetTypes: 000000000100000002000000
-  assetAllowances: 010000000a0000000a000000
+  assetAllowances: 010000000100000001000000
 --- !u!1 &1271442287
 GameObject:
   m_ObjectHideFlags: 0

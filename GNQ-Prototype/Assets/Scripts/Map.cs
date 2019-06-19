@@ -37,16 +37,14 @@ public class Map : MonoBehaviour
         cameraControl.CalcOrthogSize(totalWidth);
     }
 
-    public void FocusOnDistrict(District focusDistrict) {
-        bool defocus = false;
-
-        if (focusDistrict != null) {
-            defocus = true;
-            focusDistrict.DefocusDistrict(false);
+    public void FocusOnDistrict(District focusDistrict, GameState state) {
+        bool focusOtherDistricts = false;
+        if (focusDistrict == null) { focusOtherDistricts = true; }
+        else {
+            focusDistrict.Focus(true, state);
         }
-
         for (int i = 0; i < districts.Length; i++) {
-            if (districts[i] != focusDistrict) { districts[i].DefocusDistrict(defocus); }
+            if (districts[i] != focusDistrict) { districts[i].Focus(focusOtherDistricts, state); }
         }
     }
 

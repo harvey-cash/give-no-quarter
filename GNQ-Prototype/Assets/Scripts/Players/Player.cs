@@ -19,11 +19,14 @@ public class Player : MonoBehaviour
 
     private void Start() {
         InitAssetAllowances();
+        GameMaster.game.ui.ShowEndTurn(ExhaustedAllowances());
     }
 
     private void Update() {
         MoveUnInitAsset();
     }
+
+    public void BeginTurn() { }
 
     // ~~~~~~ PLACING DISTRICTS ~~~~~~~~~ //
     public Dictionary<AssetEnum, int> assetAllowance = new Dictionary<AssetEnum, int>();
@@ -40,16 +43,25 @@ public class Player : MonoBehaviour
     public void OnAssetClick(AssetCreator creator) {
         if (assetAllowance[creator.assetType] <= 0) { return; }
 
-        if (unInitAsset != null) { Destroy(unInitAsset.GetGameObject()); }
+        if (unInitAsset != null) {
+            Destroy(unInitAsset.GetGameObject());
+            unInitAsset = null;
+
+            if (creator != assetCreator) {
+                assetCreator = creator;
+                unInitAsset = Instantiate(assetCreator.asset).GetComponent<IPlaceable>();
+            }
+        }
         else {
             assetCreator = creator;
-            unInitAsset = Instantiate(assetCreator.asset).GetComponent<IPlaceable>(); ;
+            unInitAsset = Instantiate(assetCreator.asset).GetComponent<IPlaceable>();
         }
     }
 
     private void MoveUnInitAsset() {
         if (unInitAsset != null) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             if (Physics.Raycast(ray, out RaycastHit hit)) {
                 Vector3 pos = new Vector3(
                     Mathf.RoundToInt(hit.point.x),
@@ -65,7 +77,17 @@ public class Player : MonoBehaviour
         unInitAsset.InitialiseAsset(district, tile, this);
         unInitAsset = null;
         assetAllowance[assetCreator.assetType]--;
+        OnAssetClick(assetCreator);
+
         GameMaster.game.ui.UpdateAssetQuantities(assetAllowance);
+        GameMaster.game.ui.ShowEndTurn(ExhaustedAllowances());
+    }
+
+    private bool ExhaustedAllowances() {
+        foreach (KeyValuePair<AssetEnum, int> keyVal in assetAllowance) {
+            if (keyVal.Value > 0) { return false; }
+        }
+        return true;
     }
 
     // ~~~~~ PICKING DISTRICTS ~~~~~~~~~ //

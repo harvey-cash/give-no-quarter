@@ -87,6 +87,7 @@ public class Tile : SelectableObject
                 activePlayer.BuildAsset(district, this);
             }
         }
+        // Moving placed assets
     }
 
     public void MapViewClick() {
@@ -111,8 +112,9 @@ public class Tile : SelectableObject
         else {
             Asset activeAsset = activePlayer.selectedTile.asset;
             if (activeAsset.team != activePlayer.team) { throw new Exception("What the hell!?"); }
+
             activeAsset.ClickSomeTile(activePlayer, activePlayer.selectedTile, this, out bool nowDeselect);
-            if (nowDeselect) {
+            if (activePlayer.selectedTile != null && nowDeselect) {
                 activePlayer.selectedTile.DoSelect(false);
                 activeAsset.DoSelect(false);
                 activePlayer.selectedTile = null;
@@ -129,5 +131,21 @@ public class Tile : SelectableObject
     public void MouseExitTile() {
         DoHover(false);
         if (asset != null) { asset.DoHover(false); }
+    }
+
+    // ~~~~~~~~ BUILD ~~~~~~~~ //
+
+    private static float width = 0.9f, height = 0.1f;
+    public static Tile Build(District district, Vector3 pos, Player team) {
+        GameObject tileObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        tileObject.name = "Tile";
+        tileObject.transform.parent = district.transform;
+        tileObject.transform.localScale = new Vector3(width, height, width);
+        tileObject.transform.localPosition = pos;
+        tileObject.GetComponent<BoxCollider>().size = new Vector3(1 / width, 1, 1 / width);
+
+        Tile tile = tileObject.AddComponent<Tile>();
+        tile.Initialise(district, pos, team);
+        return tile;
     }
 }

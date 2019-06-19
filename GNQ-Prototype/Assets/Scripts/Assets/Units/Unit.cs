@@ -5,9 +5,11 @@ using UnityEngine;
 
 public abstract class Unit : Asset
 {
+    List<Tile> validTargetTiles = new List<Tile>();
+
     private int moveRange = 4;
     public override void OnSelect(District district, Tile tile) {
-        List<Tile> validTargetTiles = new List<Tile>();
+        validTargetTiles = new List<Tile>();
         (int, int) tileCoords = (Mathf.RoundToInt(tile.coords.x), Mathf.RoundToInt(tile.coords.z));
 
         (int, int)[] directions = GetMovementDirs();
@@ -22,7 +24,7 @@ public abstract class Unit : Asset
                 if (district.tiles.TryGetValue((coords.Item1, coords.Item2), out Tile targetTile)) {
                     // Something there, break the loop
                     if (targetTile.asset != null) {
-                        if (targetTile.asset.team == team) { validTargetTiles.Add(targetTile); }
+                        if (targetTile.asset.team != team) { validTargetTiles.Add(targetTile); }
                         break;
                     }
                     else {
@@ -37,7 +39,15 @@ public abstract class Unit : Asset
         }
 
         for (int i = 0; i < validTargetTiles.Count; i++) {
-            //validTargetTiles[i].Highlight(HighlightEnum.HIGHLIGHT);
+            validTargetTiles[i].inRange = true;
+            validTargetTiles[i].DoPath(true);
+        }
+    }
+
+    private void StopShowingPath() {
+        for (int i = 0; i < validTargetTiles.Count; i++) {
+            validTargetTiles[i].inRange = false;
+            validTargetTiles[i].DoPath(false);
         }
     }
 
@@ -48,8 +58,15 @@ public abstract class Unit : Asset
 
     // Contextually choose what to do
     public override void ClickSomeTile(Player actingPlayer, Tile currentTile, Tile targetTile, out bool nowDeselect) {
-        if (currentTile != targetTile) {
-            ActUpon(actingPlayer, currentTile, targetTile, out nowDeselect);
+        StopShowingPath();
+        if (currentTile != targetTile) {            
+            ActUpon(actingPlayer, currentTile, targetTile, out bool success);
+            nowDeselect = success;
+
+            if (success) {
+                DoSelect(false);
+                GameMaster.game.EndTurn();
+            }
         }
         else {
             nowDeselect = true;

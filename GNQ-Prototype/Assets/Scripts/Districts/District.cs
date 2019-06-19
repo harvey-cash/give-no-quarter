@@ -32,13 +32,7 @@ public class District : MonoBehaviour
                 else if (j >= districtDepth - territoryDepth) { team = PlayerManager.them; }
                 else { team = null; }
 
-                GameObject tileObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                tileObject.transform.parent = this.transform;
-                tileObject.transform.localScale = new Vector3(0.9f, 0.1f, 0.9f);
-                tileObject.transform.localPosition = pos;
-
-                Tile tile = tileObject.AddComponent<Tile>();
-                tile.Initialise(this, pos, team);
+                Tile tile = Tile.Build(this, pos, team);
                 
                 tiles[(i, j)] = tile;
             }
@@ -62,25 +56,26 @@ public class District : MonoBehaviour
         Highlight(HighlightEnum.NORMAL);
     }
 
-    // While turns are happening, can't click on other districts!
-    public void EnableColliders(bool enabled) {
+    // ~~~~~~~~~~~~~~~~ FOCUSING ~~~~~~~~~~~~~~~ //
+
+    public void Focus(bool enabled, GameState state) {
         Collider[] colliders = GetComponentsInChildren<Collider>();
         for (int i = 0; i < colliders.Length; i++) {
-            Collider collider = colliders[i];
-
-            if (collider != pickCollider) { collider.enabled = enabled; }
+            if (colliders[i] != pickCollider) { colliders[i].enabled = true; }
         }
-    }
 
-    public void DefocusDistrict(bool defocus) {
-        
-        if (defocus) { Highlight(HighlightEnum.DEFOCUS); }
+        if (state != GameState.PREPARE_THEM && state != GameState.PREPARE_US) {
+            ApplyFogOfWar(GameMaster.game.activePlayer.team);
+        }
+
+        if (!enabled) {
+            for (int i = 0; i < colliders.Length; i++) {
+                if (colliders[i] != pickCollider) { colliders[i].enabled = false; }
+            }
+        }
+
+        if (!enabled) { Highlight(HighlightEnum.DEFOCUS); }
         else { Highlight(HighlightEnum.NORMAL); }
-
-        SelectableObject[] selectables = GetComponentsInChildren<SelectableObject>();
-        for (int i = 0; i < selectables.Length; i++) {
-            selectables[i].DoFocus(!defocus);
-        }
     }
 
     // ~~~~~~~~~~ HIGHLIGHTING ~~~~~~~~ //
@@ -92,6 +87,104 @@ public class District : MonoBehaviour
 
         if (select == HighlightEnum.DEFOCUS) { districtBase.GetComponent<Renderer>().material.color = map.defocusDistrict; }
     }
+
+
+    // ~~~~~~~~~~~~ FOG OF WAR ~~~~~~~~~~~ //
+
+    public void ApplyFogOfWar(PlayerEnum playerTeam) {
+        List<Tile> viewableTiles = new List<Tile>();
+
+        // for each tile in district
+        foreach (KeyValuePair<(int, int), Tile> coordTile in tiles) {
+            if (coordTile.Value.asset != null) {
+                // Friendly asset
+                if (coordTile.Value.asset.team == playerTeam) {
+                    Collider[] viewables = Physics.OverlapSphere(coordTile.Value.transform.position, 3f);
+                    for (int i = 0; i < viewables.Length; i++) {
+                        if (viewables[i].GetComponent<Tile>() != null) {
+                            viewableTiles.Add(viewables[i].GetComponent<Tile>());
+                        }
+                    }
+                }
+            }
+        }
+
+        // Disable all
+        foreach (KeyValuePair<(int, int), Tile> coordTile in tiles) {
+            coordTile.Value.GetComponent<Collider>().enabled = false;
+            coordTile.Value.DoFocus(false);
+            if(coordTile.Value.asset != null) {
+                coordTile.Value.asset.GetComponent<Renderer>().enabled = false;
+            }
+        }
+
+        // Enable those we saw
+        for (int i = 0; i < viewableTiles.Count; i++) {
+            viewableTiles[i].GetComponent<Collider>().enabled = true;
+            viewableTiles[i].DoFocus(true);
+            if (viewableTiles[i].asset != null) {
+                viewableTiles[i].asset.GetComponent<Renderer>().enabled = true;
+            }
+        }
+
+    }
+
+    // Disable all tiles in this district, then re-enable only those we can see!
+    public void OLDFogOfWar(PlayerEnum playerTeam) {
+        List<(int, int)> withinSightCoords = new List<(int, int)>();
+        List<Tile> viewableTiles = new List<Tile>();
+        List<Tile> enemyAssetTiles = new List<Tile>();
+
+        // for each tile in district
+        foreach(KeyValuePair<(int,int),Tile> coordTile in tiles) {
+            // Disable ALL tiles!
+            coordTile.Value.GetComponent<Collider>().enabled = false;
+            coordTile.Value.DoFocus(false);
+
+            // If tile has a friendly asset on it
+            if (coordTile.Value.asset != null) {
+
+                // Record enemy-occupied tile
+                if (coordTile.Value.asset.team != playerTeam) {
+                    coordTile.Value.asset.GetComponent<Renderer>().enabled = false;
+                    enemyAssetTiles.Add(coordTile.Value);                    
+                }
+
+                else {
+                    (int, int) tileCoords = coordTile.Key;
+                    (int, int)[] viewSphere = coordTile.Value.asset.GetViewSphere();
+
+                    // For each coordinate in view of the friendly asset
+                    for (int i = 0; i < viewSphere.Length; i++) {
+                        (int, int) coords = (
+                            tileCoords.Item1 + viewSphere[i].Item1,
+                            tileCoords.Item2 + viewSphere[i].Item2
+                        );
+
+                        // Add to list of viewable tiles
+                        if (tiles.TryGetValue(coords, out Tile viewableTile)) {
+                            Debug.Log(coords.ToString());
+                            viewableTiles.Add(viewableTile);
+
+                            // viewable, so re-enable!
+                            viewableTile.GetComponent<Collider>().enabled = true;
+
+                            /*
+                            GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                            marker.transform.position = viewableTile.transform.position + Vector3.up * 0.5f;
+                            marker.transform.localScale = Vector3.one * 0.1f;
+                            */
+
+                            viewableTile.GetComponent<Renderer>().material.color = Color.red;
+                            viewableTile.DoFocus(true);
+                            if (viewableTile.asset != null) { viewableTile.asset.GetComponent<Renderer>().enabled = true; }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     // Create a district object and return it
     public static District BuildDistrict(Map map, int districtIndex, int districtWidth, int districtDepth, float spacing) {

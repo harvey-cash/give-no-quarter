@@ -75,7 +75,7 @@ public abstract class SelectableObject : MonoBehaviour
     // ~~~~~ STATE MACHINE LOGIC ~~~~~~ //
 
     public void DoFocus(bool enabled) {
-        if (enabled) {
+        if (enabled) {            
             if (state == HighlightState.DEFOCUSED) { SetNormal(); }
         }
         else {
