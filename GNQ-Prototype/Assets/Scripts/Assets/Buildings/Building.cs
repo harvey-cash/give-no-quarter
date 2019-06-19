@@ -7,9 +7,11 @@ public class Building : Asset {
         nowDeselect = true;
     }
 
-    public override void GrabHighlightColors(Player player) {
-        normalColor = player.normalUnitColor;
-        highlightColor = player.highlightUnitColor;
-        selectColor = player.selectUnitColor;
+    public override void HoverOverSomeTile(Player actingPlayer, Tile currentTile, Tile targetTile) {
+        return;
+    }
+
+    public override void OnSelect(District district, Tile tile) {
+        return;
     }
 }

@@ -3,32 +3,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile : MonoBehaviour, ISelectable
+public class Tile : SelectableObject
 {
     public District district { private set; get; }
     public PlayerEnum team { private set; get; }
     public Vector3 coords { private set; get; }
     public Asset asset;
 
-    private Color normalTileColor, highlightTileColor, selectTileColor;
+    public override void GrabHighlightColors(Player player) {
+        // normal, defocus, selected, highlighted, pathed, ranged, notRanged
+        if (player != null) {
+            SetColors(
+                player.normalTileColor,
+                GameMaster.game.map.defocusTile,
+                player.selectTileColor,
+                player.highlightTileColor,
+                GameMaster.game.map.pathTile,
+                GameMaster.game.map.rangeTile,
+                GameMaster.game.map.notRangeTile
+            );
+        }
+        else {
+            SetColors(
+                GameMaster.game.map.normalNoMans,
+                GameMaster.game.map.defocusTile,
+                GameMaster.game.map.selectNoMans,
+                GameMaster.game.map.highlightNoMans,
+                GameMaster.game.map.pathTile,
+                GameMaster.game.map.rangeTile,
+                GameMaster.game.map.notRangeTile
+            );
+        }
+    }
 
     public void Initialise(District district, Vector3 coords, Player player) {
         this.district = district;
         this.coords = coords;
-
-        if (player != null) {
-            team = player.team;
-            normalTileColor = player.normalTileColor;
-            highlightTileColor = player.highlightTileColor;
-            selectTileColor = player.selectTileColor;
-        }
-        else {
-            normalTileColor = district.map.normalNoMans;
-            highlightTileColor = district.map.highlightNoMans;
-            selectTileColor = district.map.selectNoMans;
-        }
-
-        Highlight(HighlightEnum.NORMAL);
+        if (player != null) { team = player.team; }
+        GrabHighlightColors(player);
+        SetNormal();
     }
 
     private void OnMouseEnter() {
@@ -88,15 +101,20 @@ public class Tile : MonoBehaviour, ISelectable
         if (activePlayer.selectedTile == null) {
             if (asset != null && asset.team == activePlayer.team) {
                 activePlayer.selectedTile = this;
-                Highlight(HighlightEnum.FOCUS);
+                asset.OnSelect(district, this);
+
+                DoSelect(true);
+                asset.DoSelect(true);
             }
         }
         // Some tile of some (friendly) asset is selected
         else {
-            Asset asset = activePlayer.selectedTile.asset;
-            asset.ClickSomeTile(activePlayer, activePlayer.selectedTile, this, out bool nowDeselect);
+            Asset activeAsset = activePlayer.selectedTile.asset;
+            if (activeAsset.team != activePlayer.team) { throw new Exception("What the hell!?"); }
+            activeAsset.ClickSomeTile(activePlayer, activePlayer.selectedTile, this, out bool nowDeselect);
             if (nowDeselect) {
-                activePlayer.selectedTile.Highlight(HighlightEnum.NORMAL);
+                activePlayer.selectedTile.DoSelect(false);
+                activeAsset.DoSelect(false);
                 activePlayer.selectedTile = null;
             }
         }
@@ -105,34 +123,11 @@ public class Tile : MonoBehaviour, ISelectable
     // ~~~~~~~~ HIGHLIGHTING & MOUSE ~~~~~~~~~~ //
 
     public void MouseEnterTile() {
-        Player activePlayer = GameMaster.game.activePlayer;
-
-        // Deal with old mouseOverTile first
-        if (activePlayer.selectedTile != activePlayer.mouseOverTile) {
-            Highlight(HighlightEnum.NORMAL);
-        }
-        activePlayer.mouseOverTile = this;
-
-        if (activePlayer.selectedTile == this) {
-            Highlight(HighlightEnum.FOCUS);
-        }
-        else { Highlight(HighlightEnum.HIGHLIGHT); }
+        DoHover(true);
+        if (asset != null) { asset.DoHover(true); }
     }
-
     public void MouseExitTile() {
-        Player activePlayer = GameMaster.game.activePlayer;
-
-        if (activePlayer.selectedTile != this) { Highlight(HighlightEnum.NORMAL); }
-        if (activePlayer.mouseOverTile == this) { activePlayer.mouseOverTile = null; }
-    }
-
-    public void Highlight(HighlightEnum select) {
-        if (asset != null) { asset.Highlight(select); }
-
-        if (select == HighlightEnum.NORMAL) { GetComponent<Renderer>().material.color = normalTileColor; }
-        if (select == HighlightEnum.HIGHLIGHT) { GetComponent<Renderer>().material.color = highlightTileColor; }
-        if (select == HighlightEnum.FOCUS) { GetComponent<Renderer>().material.color = selectTileColor; }
-
-        if (select == HighlightEnum.DEFOCUS) { GetComponent<Renderer>().material.color = district.map.deselectTile; }
+        DoHover(false);
+        if (asset != null) { asset.DoHover(false); }
     }
 }

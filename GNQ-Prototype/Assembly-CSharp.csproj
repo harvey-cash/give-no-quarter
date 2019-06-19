@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Assets\Buildings\HeadQuarters.cs" />
     <Compile Include="Assets\Scripts\Assets\IPlaceable.cs" />
     <Compile Include="Assets\Scripts\Assets\ISelectable.cs" />
+    <Compile Include="Assets\Scripts\Assets\SelectableObject.cs" />
     <Compile Include="Assets\Scripts\Assets\Units\Bishop.cs" />
     <Compile Include="Assets\Scripts\Assets\Units\Rook.cs" />
     <Compile Include="Assets\Scripts\Assets\Units\Unit.cs" />

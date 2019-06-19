@@ -14,7 +14,9 @@ public class Map : MonoBehaviour
     public float totalWidth { private set; get; }
 
     public Color normalNoMans, highlightNoMans, selectNoMans;
-    public Color deselectDistrict, deselectTile, deselectUnit;
+    public Color defocusDistrict, defocusTile, defocusAsset;
+    public Color pathTile, rangeTile, notRangeTile;
+    public Color pathAsset, rangeAsset, notRangeAsset;
 
     private void Awake() {
         cameraControl.map = this;

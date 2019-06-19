@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class District : MonoBehaviour, ISelectable
+public class District : MonoBehaviour
 {
     public Map map { private set; get; }
-    public Tile[,] tiles { private set; get; }
+    //public Tile[,] tiles { private set; get; }
+    public Dictionary<(int,int),Tile> tiles { private set; get; }
 
     public Vector3 center { private set; get; }
     public BoxCollider pickCollider;
@@ -20,7 +21,9 @@ public class District : MonoBehaviour, ISelectable
 
         int territoryDepth = Mathf.FloorToInt(districtDepth / 2f);
 
-        tiles = new Tile[districtWidth, districtDepth];
+        //tiles = new Tile[districtWidth, districtDepth];
+        tiles = new Dictionary<(int, int), Tile>();
+
         for (int i = 0; i < districtWidth; i++) {
             for (int j = 0; j < districtDepth; j++) {
                 Vector3 pos = new Vector3(i, 0, j);
@@ -37,7 +40,7 @@ public class District : MonoBehaviour, ISelectable
                 Tile tile = tileObject.AddComponent<Tile>();
                 tile.Initialise(this, pos, team);
                 
-                tiles[i, j] = tile;
+                tiles[(i, j)] = tile;
             }
         }
     }
@@ -70,10 +73,13 @@ public class District : MonoBehaviour, ISelectable
     }
 
     public void DefocusDistrict(bool defocus) {
-        ISelectable[] selectables = GetComponentsInChildren<ISelectable>();
+        
+        if (defocus) { Highlight(HighlightEnum.DEFOCUS); }
+        else { Highlight(HighlightEnum.NORMAL); }
+
+        SelectableObject[] selectables = GetComponentsInChildren<SelectableObject>();
         for (int i = 0; i < selectables.Length; i++) {
-            if (!defocus) { selectables[i].Highlight(HighlightEnum.NORMAL); }
-            else { selectables[i].Highlight(HighlightEnum.DEFOCUS); }
+            selectables[i].DoFocus(!defocus);
         }
     }
 
@@ -84,7 +90,7 @@ public class District : MonoBehaviour, ISelectable
         if (select == HighlightEnum.HIGHLIGHT) { districtBase.GetComponent<Renderer>().material.color = districtHighlight; }
         if (select == HighlightEnum.FOCUS) { return; }
 
-        if (select == HighlightEnum.DEFOCUS) { districtBase.GetComponent<Renderer>().material.color = map.deselectDistrict; }
+        if (select == HighlightEnum.DEFOCUS) { districtBase.GetComponent<Renderer>().material.color = map.defocusDistrict; }
     }
 
     // Create a district object and return it

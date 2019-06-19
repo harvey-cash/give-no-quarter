@@ -6,7 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public PlayerEnum team;
-    public Tile mouseOverTile, selectedTile;
+    public Tile selectedTile;
 
     public District pickedDistrict;
 
@@ -77,7 +77,7 @@ public class Player : MonoBehaviour
 
     // ~~~~~~~~ HIGHLIGHTING & MOUSE ~~~~~~~~~~ //
 
-    public Color normalUnitColor, highlightUnitColor, selectUnitColor;
+    public Color normalAssetColor, highlightAssetColor, selectAssetColor;
     public Color normalTileColor, highlightTileColor, selectTileColor;    
 
 }

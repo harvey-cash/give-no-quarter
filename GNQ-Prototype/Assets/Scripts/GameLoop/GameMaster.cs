@@ -34,6 +34,7 @@ public class GameMaster : MonoBehaviour
 
     // Called by player when EndTurn button is clicked
     public void EndTurn() {
+        activePlayer.selectedTile = null;
         if (activePlayer.pickedDistrict != null) {
             activePlayer.pickedDistrict.EnableColliders(false);
         }

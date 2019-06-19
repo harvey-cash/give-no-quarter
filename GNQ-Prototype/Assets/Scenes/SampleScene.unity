@@ -663,13 +663,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 2
-  mouseOverTile: {fileID: 0}
   selectedTile: {fileID: 0}
   pickedDistrict: {fileID: 0}
   teamColor: {r: 0.6037736, g: 0.12815951, b: 0.12815951, a: 0}
-  normalUnitColor: {r: 0.7924528, g: 0.48967603, b: 0.48967603, a: 0}
-  highlightUnitColor: {r: 0.7735849, g: 0.36912748, b: 0.26637593, a: 0}
-  selectUnitColor: {r: 0.7830189, g: 0.21936764, b: 0.1735938, a: 0}
+  normalAssetColor: {r: 0.9150943, g: 0.51110375, b: 0.42733178, a: 0}
+  highlightAssetColor: {r: 1, g: 0.511672, b: 0.3066038, a: 0}
+  selectAssetColor: {r: 0.7830189, g: 0.18204023, b: 0.09972411, a: 0}
   normalTileColor: {r: 0.50980395, g: 0.50061595, b: 0.3372549, a: 0}
   highlightTileColor: {r: 0.6039216, g: 0.57718915, b: 0.27450982, a: 0}
   selectTileColor: {r: 0.6117647, g: 0.5600562, b: 0.15294118, a: 0}
@@ -833,13 +832,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
-  mouseOverTile: {fileID: 0}
   selectedTile: {fileID: 0}
   pickedDistrict: {fileID: 0}
   teamColor: {r: 0.15690638, g: 0.3575235, b: 0.7735849, a: 0}
-  normalUnitColor: {r: 0.63923997, g: 0.66125715, b: 0.8018868, a: 0}
-  highlightUnitColor: {r: 0.56256676, g: 0.62461734, b: 0.9245283, a: 0}
-  selectUnitColor: {r: 0.246707, g: 0.27701777, b: 0.8301887, a: 0}
+  normalAssetColor: {r: 0.5082325, g: 0.5546066, b: 0.764151, a: 0}
+  highlightAssetColor: {r: 0.41429335, g: 0.55864674, b: 0.9245283, a: 0}
+  selectAssetColor: {r: 0.21026169, g: 0.25112608, b: 0.990566, a: 0}
   normalTileColor: {r: 0.33882165, g: 0.509434, b: 0.34089497, a: 0}
   highlightTileColor: {r: 0.27625492, g: 0.6037736, b: 0.32182863, a: 0}
   selectTileColor: {r: 0.1533019, g: 0.6132076, b: 0.20251252, a: 0}
@@ -1977,9 +1975,15 @@ MonoBehaviour:
   normalNoMans: {r: 0.4528302, g: 0.4528302, b: 0.4528302, a: 0}
   highlightNoMans: {r: 0.6320754, g: 0.6320754, b: 0.6320754, a: 0}
   selectNoMans: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 0}
-  deselectDistrict: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 0}
-  deselectTile: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 0}
-  deselectUnit: {r: 0.4433962, g: 0.4433962, b: 0.4433962, a: 0}
+  defocusDistrict: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0}
+  defocusTile: {r: 0.41509432, g: 0.41509432, b: 0.41509432, a: 0}
+  defocusAsset: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 0}
+  pathTile: {r: 0.4669811, g: 0.6309004, b: 1, a: 0}
+  rangeTile: {r: 0.495283, g: 0.97067773, b: 1, a: 0}
+  notRangeTile: {r: 0.745283, g: 0.21444462, b: 0.21444462, a: 0}
+  pathAsset: {r: 0.3915094, g: 0.5836932, b: 1, a: 0}
+  rangeAsset: {r: 0.3066038, g: 0.53303033, b: 1, a: 0}
+  notRangeAsset: {r: 0.8396226, g: 0.20198467, b: 0.20198467, a: 0}
 --- !u!4 &1271442289
 Transform:
   m_ObjectHideFlags: 0
