@@ -48,6 +48,17 @@ public class Map : MonoBehaviour
         }
     }
 
+    private bool alreadyDestroyed = false;
+    public void DestroyWalls() {
+        if (!alreadyDestroyed) {
+            for (int i = 0; i < districts.Length; i++) {
+                districts[i].DestroyWall();
+            }
+
+            alreadyDestroyed = true;
+        }        
+    }
+
     public void UpdateState(GameState state) {
         bool enabled = (state == GameState.PICK_THEM || state == GameState.PICK_US);
 

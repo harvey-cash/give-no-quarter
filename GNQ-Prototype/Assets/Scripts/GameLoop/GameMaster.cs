@@ -68,17 +68,22 @@ public class GameMaster : MonoBehaviour
 
     // Update UI and Map appropriately
     public void UpdateState(GameState state) {
+        if (gameOver) { return; }
+
         ui.UpdateState(stateMachine.state);
         ui.UpdateCounters(stateMachine.roundCounter, stateMachine.turnCounter);
         map.UpdateState(stateMachine.state);
+        ui.ShowPrivacyScreen(true);
 
         if (state == GameState.PREPARE_THEM || state == GameState.PREPARE_US) {
             ui.ShowAssetPanel(true);
             ui.UpdateAssetQuantities(activePlayer.assetAllowance);
+            ui.ShowEndTurn(activePlayer.ExhaustedAllowances());
         }
         else {
             ui.ShowAssetPanel(false);
             ui.ShowEndTurn(false);
+            map.DestroyWalls();
         }
 
         if (state == GameState.TURN_THEM || state == GameState.TURN_US) {
@@ -91,6 +96,13 @@ public class GameMaster : MonoBehaviour
             cameraController.SwitchView(true);
             map.FocusOnDistrict(null, state);
         }
+    }
+
+    private bool gameOver = false;
+    public void Win(PlayerEnum team) {
+        gameOver = true;
+        ui.ShowPrivacyScreen(false);
+        ui.Win(team);
     }
 
     // Called on EndTurn, update UI and move Camera appropriately

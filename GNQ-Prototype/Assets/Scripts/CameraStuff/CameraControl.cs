@@ -69,4 +69,8 @@ public class CameraControl : MonoBehaviour
         }
         Set(b);
     }
+
+    private void KeineZeitFunction(float t) {
+        //
+    }
 }

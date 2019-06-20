@@ -9,7 +9,14 @@ public class Rook : Unit {
             currentTile.asset = null;
             transform.localPosition = targetTile.coords + Vector3.up * transform.localScale.y / 2f;
 
-            if (targetTile.asset != null) { Destroy(targetTile.asset.gameObject); }
+            if (targetTile.asset != null) {
+                Debug.Log(targetTile.asset is HeadQuarters);
+
+                if (targetTile.asset.team != team && targetTile.asset is HeadQuarters) {                    
+                    GameMaster.game.Win(team);
+                }
+                Destroy(targetTile.asset.gameObject);
+            }
             targetTile.asset = this;
 
             success = true;

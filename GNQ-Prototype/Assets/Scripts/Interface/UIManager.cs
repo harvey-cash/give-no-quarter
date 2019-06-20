@@ -36,5 +36,22 @@ public class UIManager : MonoBehaviour
     public void ShowEndTurn(bool enabled) {
         endTurnButton.SetActive(enabled);
     }
-    
+
+    public GameObject privacyScreen;
+    public void ShowPrivacyScreen(bool enabled) {
+        privacyScreen.SetActive(enabled);
+    }
+
+    private void Update() {
+        if (Input.GetKeyUp(KeyCode.Space)) {
+            ShowPrivacyScreen(false);
+        }
+    }
+
+    public Text winText;
+    public void Win(PlayerEnum player) {
+        winText.gameObject.SetActive(true);
+        winText.text = player.ToString() + " WINS!";
+    }
+
 }

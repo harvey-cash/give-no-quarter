@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
         GameMaster.game.ui.UpdateAssetQuantities(assetAllowance);
     }
 
-    public IPlaceable unInitAsset;
+    public Asset unInitAsset;
     private AssetCreator assetCreator;
 
     public void OnAssetClick(AssetCreator creator) {
@@ -49,12 +49,12 @@ public class Player : MonoBehaviour
 
             if (creator != assetCreator) {
                 assetCreator = creator;
-                unInitAsset = Instantiate(assetCreator.asset).GetComponent<IPlaceable>();
+                unInitAsset = Instantiate(assetCreator.asset).GetComponent<Asset>();
             }
         }
         else {
             assetCreator = creator;
-            unInitAsset = Instantiate(assetCreator.asset).GetComponent<IPlaceable>();
+            unInitAsset = Instantiate(assetCreator.asset).GetComponent<Asset>();
         }
     }
 
@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
         GameMaster.game.ui.ShowEndTurn(ExhaustedAllowances());
     }
 
-    private bool ExhaustedAllowances() {
+    public bool ExhaustedAllowances() {
         foreach (KeyValuePair<AssetEnum, int> keyVal in assetAllowance) {
             if (keyVal.Value > 0) { return false; }
         }

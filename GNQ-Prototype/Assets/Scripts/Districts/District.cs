@@ -11,7 +11,7 @@ public class District : MonoBehaviour
     public Vector3 center { private set; get; }
     public BoxCollider pickCollider;
 
-    private GameObject districtBase;
+    private GameObject districtBase, districtWall;
     private Color districtNormal = new Color(0.8f, 0.8f, 0.8f);
     private Color districtHighlight = new Color(1f, 1f, 1f);
 
@@ -129,62 +129,11 @@ public class District : MonoBehaviour
 
     }
 
-    // Disable all tiles in this district, then re-enable only those we can see!
-    public void OLDFogOfWar(PlayerEnum playerTeam) {
-        List<(int, int)> withinSightCoords = new List<(int, int)>();
-        List<Tile> viewableTiles = new List<Tile>();
-        List<Tile> enemyAssetTiles = new List<Tile>();
-
-        // for each tile in district
-        foreach(KeyValuePair<(int,int),Tile> coordTile in tiles) {
-            // Disable ALL tiles!
-            coordTile.Value.GetComponent<Collider>().enabled = false;
-            coordTile.Value.DoFocus(false);
-
-            // If tile has a friendly asset on it
-            if (coordTile.Value.asset != null) {
-
-                // Record enemy-occupied tile
-                if (coordTile.Value.asset.team != playerTeam) {
-                    coordTile.Value.asset.GetComponent<Renderer>().enabled = false;
-                    enemyAssetTiles.Add(coordTile.Value);                    
-                }
-
-                else {
-                    (int, int) tileCoords = coordTile.Key;
-                    (int, int)[] viewSphere = coordTile.Value.asset.GetViewSphere();
-
-                    // For each coordinate in view of the friendly asset
-                    for (int i = 0; i < viewSphere.Length; i++) {
-                        (int, int) coords = (
-                            tileCoords.Item1 + viewSphere[i].Item1,
-                            tileCoords.Item2 + viewSphere[i].Item2
-                        );
-
-                        // Add to list of viewable tiles
-                        if (tiles.TryGetValue(coords, out Tile viewableTile)) {
-                            Debug.Log(coords.ToString());
-                            viewableTiles.Add(viewableTile);
-
-                            // viewable, so re-enable!
-                            viewableTile.GetComponent<Collider>().enabled = true;
-
-                            /*
-                            GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                            marker.transform.position = viewableTile.transform.position + Vector3.up * 0.5f;
-                            marker.transform.localScale = Vector3.one * 0.1f;
-                            */
-
-                            viewableTile.GetComponent<Renderer>().material.color = Color.red;
-                            viewableTile.DoFocus(true);
-                            if (viewableTile.asset != null) { viewableTile.asset.GetComponent<Renderer>().enabled = true; }
-                        }
-                    }
-                }
-            }
+    public void DestroyWall() {
+        if (districtWall != null) {
+            Destroy(districtWall);
         }
     }
-
 
     // Create a district object and return it
     public static District BuildDistrict(Map map, int districtIndex, int districtWidth, int districtDepth, float spacing) {
@@ -208,7 +157,15 @@ public class District : MonoBehaviour
         districtBase.GetComponent<Renderer>().material.color = district.districtNormal;
         Destroy(districtBase.GetComponent<Collider>());
 
+        GameObject districtWall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        districtWall.transform.parent = districtObject.transform;
+        districtWall.transform.localScale = new Vector3(districtWidth * 2.5f, 25, 0.5f);
+        districtWall.transform.localPosition = center;
+        districtWall.GetComponent<Renderer>().material.color = district.districtNormal;
+        Destroy(districtWall.GetComponent<Collider>());
+
         district.districtBase = districtBase;
+        district.districtWall = districtWall;
         district.pickCollider = collider;
         district.center = center;
 
